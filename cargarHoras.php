@@ -93,50 +93,34 @@ class CargarHoras {
     function getArrayDiaryLog(){
         $file = fopen($this->diaryFile, "r") or exit("Unable to open file!");
         
-        //Output a line of the file until the end is reached
-        $thisDate         = date("m/Y",strtotime('yesterday'));
-        $thisMonthLastDay = date("t",strtotime('yesterday'));
-        $lastLineDate     = "";
-        $thisDayLog       = "";
+        //Output a line of the file until the end is reached        
         $arrayDiaryLog    = Array();
-        
+        $lastMont = date("m/Y",strtotime('last month'));
     
         while ( !feof($file) ) {
             
             $line = fgets($file);
             
-            $lineDate     = date("d-m-Y",strtotime(substr($line, 0, 12)));
-            $lineMonth    = date("m/Y",strtotime(substr($line, 0, 12)));
-            $lineContent  = substr($line, 12, strlen($line));
+            $lineArray = explode(' ', $line);
             
-            if ( $lineMonth == $thisDate ){
+            $lineDate     = date("d-m-Y",strtotime($lineArray[0] . $lineArray[1] . $lineArray[2]));
+            $lineMonth    = date("m/Y",strtotime($lineArray[0] . $lineArray[1] . $lineArray[2] ));
+            
+            $lineArray[0] = $lineArray[1] = $lineArray[2] = '';
+            
+            $lineContent  = implode(' ',$lineArray);
+            
+            
+            
+            if ( $lineMonth == $lastMont ) {
+            	
+                $arrayDiaryLog[$lineDate]['comment'] .= $lineContent . "\n";
                 
-                if ( ($lineDate != $lastLineDate) && $lastLineDate != '' ) {
-                    
-                    $arrayDiaryLog[$lastLineDate]['comment'] = $thisDayLog;
-                    
-                    $date = new DateTime($lastLineDate);
-                    
-                    $arrayDiaryLog[$lastLineDate]['date']  =  $date->format('d/M/y');
-                    
-                    $lastLineDate = $lineDate;
-                    $thisDayLog = "";
-                    $thisDayLog .= $lineContent;
-                    
-                } elseif ( $lineDate != $lastLineDate && $lastLineDate == '' ) {
-                    
-                    $lastLineDate = $lineDate;
-                    $thisDayLog  .= $lineContent;
-                    
-                } else{
-                    
-                    $lastLineDate = $lineDate;
-                    $thisDayLog .= $lineContent;
-                    
-                }
+                $date = new DateTime($lineDate);
                 
+                $arrayDiaryLog[$lineDate]['date']  =  $date->format('d/M/y');
             }
-
+            
         }
         
         fclose($file);
