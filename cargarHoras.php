@@ -41,11 +41,11 @@ class CargarHoras {
         
         $this->password  = 'XXXXXX';
         
-	    $this->proyect   = 'XXX'
+        $this->proyect   = 'XXX';
 	
         $this->url       = "https://some.domain/rest/tempo-rest/1.0/worklogs/{$this->proyect}";
 	
-	    $this->diaryFile = "path/to/diary"
+        $this->diaryFile = "path/to/diary";
     }
     
     
